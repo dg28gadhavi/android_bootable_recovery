@@ -527,10 +527,6 @@ int Page::Render(void)
 	std::vector<RenderObject*>::iterator iter;
 	for (iter = mRenders.begin(); iter != mRenders.end(); iter++)
 	return 0;
-{
-		if ((*iter)->Render())
-			LOGERR("A render request has failed.\n");
-	}
 }
 
 int Page::Update(void)

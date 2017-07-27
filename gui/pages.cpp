@@ -526,6 +526,10 @@ int Page::Render(void)
 	// Render remaining objects
 	std::vector<RenderObject*>::iterator iter;
 	for (iter = mRenders.begin(); iter != mRenders.end(); iter++)
+	{
+		if ((*iter)->Render())
+			LOGERR("A render request has failed.\n");
+	}
 	return 0;
 }
 
@@ -856,7 +860,16 @@ int PageSet::LoadDetails(LoadingContext& ctx, xml_node<>* root)
 		} else {
 			LOGINFO("No themeversion in theme.\n");
 		}
-	xml_node<>* resolution = child->first_node("resolution");
+		if (theme_ver != TW_THEME_VERSION) {
+			LOGINFO("theme version from xml: %i, expected %i\n", theme_ver, TW_THEME_VERSION);
+			if (ctx.zip) {
+				gui_err("theme_ver_err=Custom theme version does not match TWRP version. Using stock theme.");
+				return TW_THEME_VER_ERR;
+			} else {
+				gui_print_color("warning", "Stock theme version does not match TWRP version.\n");
+			}
+		}
+		xml_node<>* resolution = child->first_node("resolution");
 		if (resolution) {
 			LOGINFO("Checking resolution...\n");
 			xml_attribute<>* width_attr = resolution->first_attribute("width");
